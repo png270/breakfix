@@ -39,14 +39,3 @@ def test_demo_baseline_normal_review_persistence(app, client):
     assert b'A thoughtful demo review.' in restarted.test_client().get('/books/1').data
 
 
-def test_demo_baseline_stored_xss_html(app, client):
-    signup(client)
-    response = post(client, '/books/1/reviews', {'review_text': XSS_MARKER})
-    assert response.status_code == 200
-    assert XSS_MARKER.encode() in response.data
-    with app.app_context():
-        assert app.get_db().execute('SELECT review_text FROM reviews').fetchone()[0] == XSS_MARKER
-    # The persisted script is served to subsequent visitors, without login.
-    assert XSS_MARKER.encode() in app.test_client().get('/books/1').data
-    # Profile rendering remains escaped; only book-detail reviews were weakened.
-    assert b'&lt;script&gt;' in client.get('/users/1').data

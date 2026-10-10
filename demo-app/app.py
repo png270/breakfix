@@ -99,6 +99,12 @@ def create_app(test_config=None):
             return view(*args, **kwargs)
         return wrapped
 
+    @app.template_filter('remove_script_elements')
+    def remove_script_elements(content):
+        # Narrow mitigation: strip paired script elements, retain other HTML.
+        return re.sub(r'<script\b[^>]*>.*?</script\s*>', '', content,
+                      flags=re.IGNORECASE | re.DOTALL)
+
     @app.get('/')
     def browse():
         query = request.args.get('q', '').strip()[:200]
