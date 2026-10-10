@@ -1,4 +1,4 @@
-"""INTENTIONALLY VULNERABLE DEMO BASELINE: assertions confirm unsafe behavior.
+"""INTENTIONALLY VULNERABLE DEMO BASELINE: review assertions confirm unsafe behavior. SQL injection is fixed.
 
 These tests belong only to demo/vulnerable-bookshelf. They are expected to fail
 once the respective security fix is complete. Payloads only read seeded books
@@ -16,14 +16,6 @@ def test_demo_baseline_normal_search(client):
     assert b'The Hobbit' in response.data
     assert b'Dune' not in response.data
     assert b'The Dispossessed' in client.get('/', query_string={'q': 'Le Guin'}).data
-
-
-def test_demo_baseline_sql_injection(client):
-    assert b'No books found' in client.get('/', query_string={'q': 'no-such-demo-book'}).data
-    response = client.get('/', query_string={'q': "no-such-demo-book' OR 1=1 -- "})
-    assert response.status_code == 200
-    assert response.data.count(b'class="book-card"') == 12
-    assert b'The Hobbit' in response.data and b'Dune' in response.data
 
 
 def test_demo_baseline_normal_review_persistence(app, client):
