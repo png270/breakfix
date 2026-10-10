@@ -95,7 +95,6 @@ def test_unauthenticated_writes(app, client):
         assert app.get_db().execute('SELECT COUNT(*) FROM reviews').fetchone()[0] == 0
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="Intentional SQL-injection baseline; must pass again after a real fix")
 def test_search_treats_sql_as_data(app, client):
     assert b'The Hobbit' in client.get('/?q=Hobbit').data
     assert b'The Dispossessed' in client.get('/?q=Le+Guin').data

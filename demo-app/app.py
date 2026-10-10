@@ -102,10 +102,10 @@ def create_app(test_config=None):
     @app.get('/')
     def browse():
         query = request.args.get('q', '').strip()[:200]
-        # INTENTIONALLY VULNERABLE: isolated local demo baseline only.
-        # Direct interpolation allows the search input to change SQL semantics.
+        # Bind search input as data; keep LIKE substring/wildcard behavior.
         books = db().execute(
-            f"SELECT * FROM books WHERE title LIKE '%{query}%' OR author LIKE '%{query}%' ORDER BY title"
+            "SELECT * FROM books WHERE title LIKE ? OR author LIKE ? ORDER BY title",
+            (f"%{query}%", f"%{query}%"),
         ).fetchall()
         return render_template('browse.html', books=books, query=query)
 
