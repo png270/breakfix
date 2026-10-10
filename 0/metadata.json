@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4KYT99YZZH2NV4SRB18R91D",
+  "session_id": "01a12769-0df5-7e02-9826-ebec42b9bdf1",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T22:26:55.858396Z",
+  "branch": "fix/sqli",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "demo-app/app.py",
+    "demo-app/tests/test_bookshelf.py",
+    "demo-app/tests/test_search_regression.py",
+    "demo-app/tests/test_vulnerable_baseline.py",
+    "hackathon.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "6f81ba9f864f",
+  "checkpoint_transcript_start": 283,
+  "transcript_lines_at_start": 283,
+  "compact_transcript_start": 31,
+  "token_usage": {
+    "input_tokens": 7551,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 483456,
+    "output_tokens": 1927,
+    "api_call_count": 6
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T22:26:55.837053Z",
+    "agent_lines": 50,
+    "agent_removed": 13,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 50,
+    "total_lines_changed": 63,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
