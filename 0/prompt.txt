@@ -1,0 +1,543 @@
+entire status
+
+---
+
+We are participating in the neatHack AI Agent Hackathon,
+October 10–12, 2026.
+
+PROJECT INFORMATION
+-------------------
+Project: Break My Fix
+Team: 0day
+GitHub: https://github.com/png270/breakfix
+
+Break My Fix is an autonomous AI security-testing agent that
+reviews AI generated security patches, executes adversarial
+tests, adapts based on test results, and determines whether
+the vulnerability was actually fixed.
+
+We are building two applications in ONE Git repository:
+
+1. BookShelf (demo-app/)
+   A small book-reviewing web application that will serve
+   as the authorized and controlled security-testing environment.
+
+2. Break My Fix (backend/ and frontend/)
+   Our main AI agent and its dashboard, which we will
+   implement AFTER BookShelf is complete.
+
+Follow the phases below IN ORDER.
+
+
+===========================================================
+PHASE 1 — FETCH AND INSTALL OFFICIAL NEATHACK SKILL
+===========================================================
+
+1. Fetch the official neatHack skill from:
+   https://neatlogs.com/hackathon/skill
+
+2. Read the downloaded instructions and verify that they
+   contain valid Codex skill content.
+
+3. Install the skill at:
+   .agents/skills/neathack/SKILL.md
+
+4. Do not execute scripts from the downloaded content.
+
+5. Create hackathon.md in the repository root following
+   the official skill's instructions.
+
+6. Record the following information:
+
+   Project: Break My Fix
+   Team: 0day
+   Repository: https://github.com/png270/breakfix
+
+   Description:
+   An autonomous security agent that independently verifies
+   whether AI-generated security patches actually remediate
+   vulnerabilities.
+
+   Technology stack:
+
+   BookShelf:
+   - Python
+   - Flask
+   - SQLite
+   - HTML/CSS
+   - Flask's built-in Jinja2 templates
+
+   Break My Fix:
+   - Python FastAPI
+   - React + TypeScript + Vite
+   - HTTPX
+   - Playwright
+   - pytest
+
+   Sponsor integrations:
+   - Entire: Enabled with Codex CLI.
+   - neatlogs: Account registered; SDK integration pending.
+   - cfo.ai: Business planning pending.
+
+7. Create sections for:
+   - Project overview
+   - Architecture
+   - Development milestones
+   - Dated build log
+   - Experiments and failures
+   - Sponsor integrations
+   - Demo evidence
+   - Submission checklist
+   - Known limitations
+
+8. Clearly distinguish planned work from completed work.
+
+Do not implement any application code in this phase.
+
+
+===========================================================
+PHASE 2 — INITIALIZE REPOSITORY STRUCTURE
+===========================================================
+
+Use the existing Git repository.
+
+Do NOT:
+- Initialize another Git repository.
+- Create another GitHub repository.
+- Modify Entire's configuration.
+- Modify Codex's hook configuration.
+- Create Git branches or pull requests yet.
+- Commit or push changes automatically.
+
+Create the following structure:
+
+breakfix/
+├── .agents/
+│   └── skills/
+│       └── neathack/
+│           └── SKILL.md
+├── demo-app/
+│   ├── app.py
+│   ├── templates/
+│   ├── static/
+│   │   └── css/
+│   ├── tests/
+│   └── requirements.txt
+├── backend/
+├── frontend/
+├── hackathon.md
+├── README.md
+└── .gitignore
+
+IMPORTANT:
+Only implement BookShelf in this session.
+
+The backend/ and frontend/ directories are placeholders
+for Break My Fix. Do not scaffold FastAPI or React yet.
+
+
+===========================================================
+PHASE 3 — SET UP BOOKSHELF DEVELOPMENT ENVIRONMENT
+===========================================================
+
+Before writing the application:
+
+1. Check the installed Python version.
+
+2. Create a Python virtual environment at:
+   demo-app/.venv/
+
+3. Create:
+   demo-app/requirements.txt
+
+4. Add these dependencies:
+   - Flask
+   - pytest
+
+   Include additional dependencies only if necessary.
+
+5. Install the dependencies into the virtual environment.
+
+6. Update the repository's .gitignore to exclude:
+   - .venv/
+   - __pycache__/
+   - *.pyc
+   - .env
+   - .env.*
+   - *.db
+   - *.sqlite
+   - *.sqlite3
+   - .pytest_cache/
+
+   Preserve existing .gitignore entries.
+
+7. Verify that Flask and pytest can be imported.
+
+8. Use Python's built-in sqlite3 module.
+   Do not install a separate SQLite server.
+
+9. Document the exact setup commands.
+
+If an installation fails, report the error and attempt
+a reasonable fix before continuing.
+
+
+===========================================================
+PHASE 4 — IMPLEMENT BOOKSHELF
+===========================================================
+
+Build a small but polished web application called BookShelf.
+
+CONCEPT:
+
+BookShelf is a minimal Letterboxd-style application
+for books.
+
+Users can:
+- Create an account.
+- Log in.
+- Customize their profile.
+- Browse and search books.
+- Open individual book pages.
+- Leave text reviews.
+- Read reviews written by other users.
+
+TECHNOLOGY:
+
+Backend:
+- Flask
+
+Database:
+- SQLite using Python's sqlite3 module
+
+Frontend:
+- HTML
+- CSS
+- Flask's built-in Jinja2 templates
+
+Authentication:
+- Flask sessions
+- Werkzeug password hashing
+
+Do not use React for BookShelf.
+
+
+FEATURE 1 — AUTHENTICATION
+
+Implement:
+
+- Signup page
+- Login page
+- Logout functionality
+- Session-based authentication
+- Password hashing using Werkzeug
+- Basic form validation
+- Error messages for invalid credentials
+
+Never store plaintext passwords.
+
+Use a development-only secret key supplied through
+an environment variable, with a clearly documented
+local development fallback.
+
+Do not commit real secrets.
+
+
+FEATURE 2 — USER PROFILES
+
+After signup, users can edit their profile.
+
+Profile fields:
+- Display name
+- Short bio
+
+Implement:
+- View profile
+- Edit profile
+- Save changes to SQLite
+
+Users must only be able to edit their own profiles.
+
+
+FEATURE 3 — BOOK CATALOG
+
+Create a seeded catalog containing 10–15 books.
+
+Each book should have:
+- ID
+- Title
+- Author
+- Genre
+- Description
+
+Implement:
+- Browse all books
+- Search by title or author
+- View individual book details
+
+Use parameterized SQL queries.
+
+
+FEATURE 4 — BOOK REVIEWS
+
+Authenticated users can submit reviews.
+
+Each review contains:
+- Review ID
+- Book ID
+- User ID
+- Review text
+- Creation timestamp
+
+Implement:
+- Review submission form
+- Save reviews to SQLite
+- Display reviews on book detail pages
+- Show review author's display name
+- Show review timestamp
+
+Reviews should persist across application restarts.
+
+Use Jinja2's default HTML escaping when displaying
+user-generated content.
+
+
+FEATURE 5 — FRONTEND DESIGN
+
+Create a polished, responsive interface.
+
+Design direction:
+- Modern, minimal book-reviewing platform
+- Inspired by Letterboxd's browsing experience
+- Clean typography
+- Attractive book cards.
+- Simple navigation
+- Responsive layout
+- Consistent spacing and colors
+
+Pages:
+1. Landing / Browse Books
+2. Signup
+3. Login
+4. Profile
+5. Edit Profile
+6. Book Details + Reviews
+
+Keep the UI lightweight.
+
+Use HTML/CSS and Flask templates.
+Avoid unnecessary frontend frameworks.
+
+
+===========================================================
+PHASE 5 — DATABASE INITIALIZATION
+===========================================================
+
+Create a simple SQLite schema.
+
+Required tables:
+
+users:
+- id
+- username
+- password_hash
+- display_name
+- bio
+- favorite_genre
+
+books:
+- id
+- title
+- author
+- genre
+- description
+
+reviews:
+- id
+- user_id
+- book_id
+- review_text
+- created_at
+
+Implement database initialization and seed scripts.
+
+Requirements:
+- Create tables if they do not exist.
+- Seed 10–15 books.
+- Avoid duplicate seed records.
+- Store the database locally inside demo-app/.
+- Do not commit generated database files.
+
+Use foreign keys where appropriate.
+
+Ensure the app can be initialized using a documented
+command.
+
+
+===========================================================
+PHASE 6 — PREPARE FOR FUTURE SECURITY TESTING
+===========================================================
+
+BookShelf is the controlled demo application for
+Break My Fix.
+
+Later, we will introduce two intentionally vulnerable
+scenarios and use Codex to generate security patches.
+
+SCENARIO A — SQL INJECTION
+
+Attack surface:
+Book search.
+
+Future workflow:
+1. Introduce a controlled SQL injection vulnerability.
+2. Create a vulnerable baseline Git branch.
+3. Ask Codex to fix the vulnerability.
+4. Create a GitHub PR containing the fix.
+5. Break My Fix analyzes the PR.
+6. Break My Fix tests whether SQL injection is prevented.
+
+Expected scenario:
+The patch correctly fixes SQL injection.
+
+
+SCENARIO B — STORED XSS
+
+Attack surface:
+Book reviews.
+
+Future workflow:
+1. Introduce a controlled stored XSS vulnerability.
+2. Ask Codex to implement an intentionally incomplete fix.
+3. Create a GitHub PR containing the patch.
+4. Break My Fix analyzes the PR.
+5. Break My Fix submits adversarial reviews.
+6. Break My Fix uses Playwright to verify whether
+   JavaScript executes when reviews are displayed.
+
+Expected scenario:
+The patch fails to prevent stored XSS.
+
+
+IMPORTANT SECURITY REQUIREMENTS:
+
+For this initial BookShelf implementation:
+
+- Use secure defaults.
+- Use parameterized SQL queries.
+- Escape user-generated HTML.
+- Do not introduce vulnerabilities yet.
+- Do not disable Flask/Jinja2 security protections.
+- Do not create security-fix branches or PRs yet.
+
+Keep the application easy to test locally.
+
+Later security-testing scenarios must be reproducible
+and isolated from public production environments.
+
+
+===========================================================
+PHASE 7 — RUN AND TEST BOOKSHELF
+===========================================================
+
+After implementation:
+
+1. Initialize the SQLite database.
+
+2. Seed the book catalog.
+
+3. Start the Flask application locally.
+
+4. Verify the application is accessible in a browser
+   or through local HTTP requests.
+
+5. Test the following workflows:
+
+   - Signup
+   - Login
+   - Logout
+   - Profile editing
+   - Book browsing
+   - Book searching
+   - Book detail pages
+   - Review submission
+   - Review persistence
+
+6. Add automated tests using pytest.
+
+7. Test basic security properties:
+
+   - Passwords are hashed.
+   - Unauthenticated users cannot submit reviews.
+   - Users cannot edit another user's profile.
+   - SQL search queries are parameterized.
+   - Reviews are HTML-escaped when rendered.
+
+8. Run the automated test suite.
+
+9. Fix any implementation errors.
+
+10. Report the actual test results.
+
+Do not claim functionality works unless verified.
+
+
+===========================================================
+PHASE 8 — DOCUMENTATION AND ENTIRE VERIFICATION
+===========================================================
+
+1. Update README.md with:
+   - Project overview
+   - Repository architecture
+   - BookShelf features
+   - Environment setup instructions
+   - Database initialization instructions
+   - Commands to run BookShelf
+   - Commands to execute tests
+
+2. Update hackathon.md with:
+   - Work completed
+   - Actual test results
+   - Implementation decisions
+   - Problems encountered
+   - Solutions implemented
+   - Next development milestones
+
+3. Verify that Entire is enabled.
+
+4. Check whether Entire captured the Codex session
+   and created checkpoints.
+
+5. Report checkpoint details if available.
+
+6. Do not claim Entire captured checkpoints unless
+   confirmed by the CLI.
+
+7. Do not commit or push changes automatically.
+
+
+===========================================================
+FINAL OUTPUT
+===========================================================
+
+When all phases are complete, provide:
+
+1. Summary of files created.
+2. Features implemented.
+3. Dependencies installed.
+4. Exact commands to run BookShelf.
+5. Automated tests executed and results.
+6. Any errors or unfinished work.
+7. Entire checkpoint status.
+8. Recommended next development step.
+
+Do not start building the Break My Fix agent yet.
+
+Do not create GitHub PRs yet.
+
+Do not introduce intentional vulnerabilities yet.
+
+Prioritize a fully working BookShelf application.
+
+We have a limited hackathon deadline, so avoid
+over engineering and unnecessary dependencies.

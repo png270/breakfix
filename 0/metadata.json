@@ -1,0 +1,63 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M4KVSRKJPW95N8AB6CYECBB4",
+  "session_id": "01a12769-0df5-7e02-9826-ebec42b9bdf1",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T21:35:31.390593Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    ".gitignore",
+    "README.md",
+    "backend/.gitkeep",
+    "demo-app/app.py",
+    "demo-app/requirements.txt",
+    "demo-app/static/css/style.css",
+    "demo-app/templates/auth.html",
+    "demo-app/templates/base.html",
+    "demo-app/templates/book.html",
+    "demo-app/templates/browse.html",
+    "demo-app/templates/edit_profile.html",
+    "demo-app/templates/profile.html",
+    "demo-app/tests/test_bookshelf.py",
+    "frontend/.gitkeep",
+    "hackathon.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "d16fe75311ed",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 55569,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 936320,
+    "output_tokens": 15984,
+    "api_call_count": 28,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T21:35:31.372486Z",
+    "agent_lines": 513,
+    "agent_removed": 0,
+    "human_added": 38,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 551,
+    "total_lines_changed": 551,
+    "agent_percentage": 93.10344827586206,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
