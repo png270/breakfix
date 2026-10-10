@@ -102,8 +102,11 @@ def create_app(test_config=None):
     @app.get('/')
     def browse():
         query = request.args.get('q', '').strip()[:200]
-        # Bind user input, including SQL metacharacters, as data.
-        books = db().execute('SELECT * FROM books WHERE title LIKE ? OR author LIKE ? ORDER BY title', (f'%{query}%', f'%{query}%')).fetchall()
+        # INTENTIONALLY VULNERABLE: isolated local demo baseline only.
+        # Direct interpolation allows the search input to change SQL semantics.
+        books = db().execute(
+            f"SELECT * FROM books WHERE title LIKE '%{query}%' OR author LIKE '%{query}%' ORDER BY title"
+        ).fetchall()
         return render_template('browse.html', books=books, query=query)
 
     @app.route('/signup', methods=['GET', 'POST'])

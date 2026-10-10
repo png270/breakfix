@@ -95,6 +95,7 @@ def test_unauthenticated_writes(app, client):
         assert app.get_db().execute('SELECT COUNT(*) FROM reviews').fetchone()[0] == 0
 
 
+@pytest.mark.xfail(strict=True, raises=AssertionError, reason="Intentional SQL-injection baseline; must pass again after a real fix")
 def test_search_treats_sql_as_data(app, client):
     assert b'The Hobbit' in client.get('/?q=Hobbit').data
     assert b'The Dispossessed' in client.get('/?q=Le+Guin').data
@@ -105,6 +106,7 @@ def test_search_treats_sql_as_data(app, client):
         assert app.get_db().execute('SELECT COUNT(*) FROM books').fetchone()[0] == 12
 
 
+@pytest.mark.xfail(strict=True, raises=AssertionError, reason="Intentional stored-XSS baseline; must pass again after a real fix")
 def test_reviews_escape_and_persist_after_restart(app, client):
     signup(client)
     payload = '<script>alert("xss")</script><img src=x onerror=alert(1)>'

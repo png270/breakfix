@@ -76,3 +76,19 @@ Reproduce locally using README commands. Automated suite has nine passing tests;
 
 ## Updated sponsor integrations and limitations
 Entire enabled with Codex CLI, active session confirmed, zero checkpoints currently. neatlogs account registration is builder-reported; no SDK/runtime evidence yet. cfo.ai business planning remains pending. BookShelf is a local demo, not a hardened production service: no recovery, rate limiting or moderation. Agent/dashboard and execution-based Playwright tests remain future work. Submission items above remain unchecked until supporting evidence exists.
+
+### 2026-10-10 — intentionally vulnerable BookShelf baseline
+
+Completed verification before changes: main was clean, fetched origin, and HEAD matched origin/main at `e9fe1dbb608eae7af195fec7455a1c0ffc4746d4`. Secure BookShelf suite: **9 passed in 0.67s**. Created `demo/vulnerable-bookshelf` from that exact commit; main has not been modified.
+
+This branch exists solely as the owned, isolated local baseline for later security-fix PR verification. Two deliberate changes:
+- Search SQL uses direct interpolation of `q`. Searching `no-such-demo-book` finds nothing; `no-such-demo-book' OR 1=1 -- ` returns all 12 books through the normal endpoint.
+- Book-detail reviews use Jinja2 `safe`, serving stored review text as trusted HTML. The harmless `<script>document.documentElement.dataset.bookshelfXss="demo-only";</script>` marker persists and is returned unescaped to subsequent visitors. Profile rendering stays escaped.
+
+No other security controls were disabled: authentication, CSRF, password hashing, profile ownership, bound queries in other routes and foreign keys are preserved. No external targets or exfiltration payloads used.
+
+Added four clearly named vulnerable baseline tests for normal search, injected search, normal review persistence and stored script HTML. Preserved both original secure regression tests as strict xfails because their protections are intentionally absent on this branch. All applicable tests ran: `demo-app/.venv/bin/python -m pytest demo-app/tests -q -rx` → **11 passed, 2 xfailed in 0.81s**. The seven unaffected original tests still verify normal authentication and other controls. No unexpected failures. SQLite files remain temporary/ignored. Browser JavaScript execution was not tested in this session; HTML-level stored-XSS evidence is confirmed. README records local reproduction steps.
+
+Planned use: future isolated fix PRs will target this baseline, restore secure regression expectations and let Break My Fix verify a complete SQL-injection fix versus an incomplete stored-XSS fix. Agent, dashboard, fix branches and PRs remain unimplemented. neatlogs SDK and cfo.ai business planning remain pending. Entire commit association will be checked after the authorized commit; no evidence claimed in advance.
+
+Issue encountered: sandbox blocks Git metadata writes; approved access used for fetch/branch operations. No implementation errors encountered. This branch must remain local-demo-only and must not be merged into main or publicly deployed.

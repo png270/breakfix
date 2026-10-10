@@ -74,3 +74,36 @@ Break My Fix is planned to use FastAPI, HTTPX, Playwright and pytest with a Reac
 ## Current limits
 
 No password recovery, email verification, rate limiting, moderation, review editing or production deployment. Search supports SQLite LIKE wildcards. Automated tests verify HTML escaping; execution-based Playwright adversarial testing belongs to the future agent. Desktop and 390px mobile landing layouts were visually checked in Chrome; a full device matrix has not been tested. Entire reports this Codex session active and zero checkpoints on main; no commits or pushes were made.
+
+## Intentionally vulnerable demo branch
+
+**Branch: `demo/vulnerable-bookshelf` — local controlled testing only.** The earlier secure-baseline description applies to main. This branch deliberately interpolates search input into SQL and renders book-detail review content with Jinja2 `safe`. Authentication, CSRF, password hashing, profile ownership and profile HTML escaping remain enabled. Do not deploy this branch publicly or merge it into main.
+
+Run the same initialization/server commands above, on loopback only. Use a fresh local demo account and no sensitive data.
+
+### SQL injection reproduction
+
+1. Search for `no-such-demo-book`: no results.
+2. Search for `no-such-demo-book' OR 1=1 -- `: all 12 seeded books are returned.
+
+Equivalent local request:
+
+```sh
+curl --get --data-urlencode "q=no-such-demo-book' OR 1=1 -- " http://127.0.0.1:5001/
+```
+
+### Stored XSS reproduction
+
+1. Sign up or log in normally.
+2. Open `/books/1` and submit this harmless review:
+
+```html
+<script>document.documentElement.dataset.bookshelfXss="demo-only";</script>
+```
+
+3. Open the book again, including as a logged-out visitor. Its HTML contains the unescaped script. In a browser the script sets the page's `data-bookshelf-xss` attribute to `demo-only`; inspect the `<html>` element in DevTools. No external request or data access is involved.
+4. The reader's profile still escapes the same review content.
+
+Verified using normal Flask endpoint workflows: **11 passed, 2 xfailed**. Four dedicated `test_demo_baseline_*` tests establish normal search/reviews, injected search results, persistence and raw stored-script HTML. Two original secure-regression tests are preserved with strict expected-failure markers on this branch. Their failures are intentional evidence of the weakened protections, not passing security checks. All other original tests pass. Browser execution is described for manual reproduction; this suite verifies rendered HTML, not JavaScript execution.
+
+Future fix branches/PRs will use this baseline to compare security behavior. Restore the relevant secure regression test to an ordinary passing test and replace the corresponding vulnerable-behavior assertion when preparing a fix. No fix branch or PR has been created.
