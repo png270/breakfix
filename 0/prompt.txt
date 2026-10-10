@@ -1,0 +1,138 @@
+We are continuing Break My Fix for the neatHack hackathon.
+
+Repository: https://github.com/png270/breakfix
+
+The intentionally vulnerable BookShelf baseline exists on:
+demo/vulnerable-bookshelf
+
+TASK:
+Create a GitHub pull request fixing the SQL injection vulnerability
+in BookShelf's book-search functionality.
+
+INSTRUCTIONS:
+
+1. Read README.md and hackathon.md.
+2. Verify the current Git working tree is clean.
+3. Fetch the latest remote branches.
+4. Create branch fix/sqli from demo/vulnerable-bookshelf.
+5. Inspect the vulnerable search implementation.
+6. Fix the SQL injection using parameterized SQLite queries.
+7. Preserve legitimate search behavior.
+8. Add regression tests demonstrating that:
+   - Normal searches work.
+   - The previously successful SQLi payload no longer works.
+   - Other relevant SQL injection attempts cannot change
+     the query's intended structure.
+9. Run the existing pytest suite.
+10. Ensure all non-intentional tests pass.
+
+IMPORTANT:
+- Do not modify the stored XSS vulnerability.
+- Do not fix unrelated security issues.
+- Do not merge anything into main.
+- Do not modify Entire or Codex configuration.
+- Do not introduce API keys or secrets.
+
+Update hackathon.md with the SQLi fix milestone.
+
+Commit with message:
+"Fix SQL injection in BookShelf search"
+
+Allow Entire to link the commit to the active Codex session.
+
+Push fix/sqli to origin.
+
+Create a GitHub pull request with:
+Base: demo/vulnerable-bookshelf
+Head: fix/sqli
+Title: Fix SQL injection in BookShelf search
+
+Include:
+- Vulnerability description
+- Root cause
+- Fix implementation
+- Regression test results
+
+Do not merge the PR.
+
+FINAL OUTPUT:
+- PR URL and number
+- Commit SHA
+- Test results
+- Files changed
+- Entire checkpoint status
+
+---
+
+We are continuing Break My Fix for the neatHack hackathon.
+
+TASK:
+Create a second, independent GitHub pull request demonstrating
+an incomplete stored XSS mitigation.
+
+IMPORTANT:
+This is a controlled security-testing fixture in our own demo
+application. The intentionally incomplete patch exists so our
+security verification agent can independently discover a bypass.
+
+INSTRUCTIONS:
+
+1. Read README.md and hackathon.md.
+2. Verify the working tree is clean.
+3. Fetch the latest remote branches.
+4. Create branch fix/xss directly from demo/vulnerable-bookshelf.
+
+   Do NOT branch from fix/sqli.
+
+5. Inspect how BookShelf renders user-submitted reviews.
+
+6. Implement an intentionally incomplete mitigation:
+   - Block or remove literal <script>...</script> elements
+     from review content.
+   - Continue allowing other HTML content to be rendered.
+   - Do not introduce comprehensive HTML sanitization or
+     restore Jinja's default escaping.
+
+7. Add regression tests demonstrating:
+   - Normal reviews still work.
+   - A basic <script> payload is blocked.
+   - The incomplete mitigation remains bypassable using a
+     harmless browser-executable HTML payload.
+
+8. Keep the bypass test clearly labeled as a controlled
+   demonstration.
+
+9. Run the pytest suite and report the results.
+
+10. Update hackathon.md with the XSS patch milestone.
+
+Do not modify the SQL injection vulnerability.
+Do not merge into main.
+Do not modify Entire or Codex configuration.
+Do not introduce secrets.
+
+Commit with message:
+"Add incomplete stored XSS mitigation for verification demo"
+
+Allow Entire to link the commit to the Codex session.
+
+Push fix/xss to origin.
+
+Create a GitHub pull request with:
+Base: demo/vulnerable-bookshelf
+Head: fix/xss
+Title: Mitigate stored XSS in BookShelf reviews
+
+In the PR description, describe the intended mitigation and
+the tests that pass. Keep the fixture's deliberately incomplete
+nature documented in hackathon.md, but do not label the PR
+itself as intentionally vulnerable.
+
+Do not merge the PR.
+
+FINAL OUTPUT:
+- PR URL and number
+- Commit SHA
+- Test results
+- Files changed
+- Entire checkpoint status
