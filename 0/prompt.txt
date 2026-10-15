@@ -1,0 +1,137 @@
+We're continuing the Break My Fix hackathon project. Read `README.md`, `hackathon.md`, `backend/README.md`, and `.agents/skills/neathack/SKILL.md` to understand the existing implementation. The agent backend is built, Docker fixtures are validated, and neatlogs CLI is authenticated. We now need to integrate the neatlogs Python SDK. Preserve existing code, branches, and Entire configuration.
+
+PROJECT CONTEXT
+- Python/FastAPI backend is implemented.
+- Agent has an LLM adapter, tool dispatcher, and bounded execution loop.
+- Docker is operational.
+- Both BookShelf fixtures are built and pinned to their PR commits.
+- Chromium browser testing is currently blocked by sandbox compatibility.
+- neatlogs CLI is installed and authenticated.
+- The neatlogs project API key is stored in backend/.env.
+
+TASK
+Integrate neatlogs observability into the existing Python agent.
+
+STEP 1 — INSPECT
+
+Read:
+- .agents/skills/neathack/SKILL.md
+- https://docs.neatlogs.com/sdk/python
+- backend/app/observability.py
+- backend/app/agent.py
+- backend/app/llm.py
+- backend/app/main.py
+- backend/app/sandbox.py
+
+Follow the official neatlogs SDK documentation.
+Do not invent SDK methods.
+
+STEP 2 — INSTALL
+
+Install the official neatlogs Python SDK into backend/.venv.
+
+Update backend requirements and .env.example.
+
+Ensure backend/.env is gitignored.
+
+Do not print or expose credentials.
+
+STEP 3 — INSTRUMENT
+
+Use backend/app/observability.py as the central integration.
+
+Capture the following events:
+
+1. AGENT RUN
+   - Run ID
+   - PR URL
+   - Pinned commit SHA
+   - Start/end timestamps
+   - Success/failure
+
+2. LLM CALLS
+   - Model name
+   - Request duration
+   - Token usage, if available
+   - Requested tool names
+   - Errors and retries
+
+3. TOOL EXECUTION
+   - Tool name
+   - Sanitized arguments
+   - Execution duration
+   - Success/failure
+   - Sanitized observations
+
+4. AGENT DECISIONS
+   - Iteration number
+   - Hypothesis being tested
+   - Selected action
+   - Remaining execution budget
+
+5. FINAL VERDICT
+   - FIX_VERIFIED
+   - BYPASS_CONFIRMED
+   - INCONCLUSIVE
+   - Evidence references
+   - Limitations
+
+All events must be correlated under the same neatlogs trace.
+
+STEP 4 — SECURITY
+
+Never capture or export:
+- API keys
+- Authorization headers
+- Session cookies
+- Passwords
+- Environment variables
+- Sensitive request bodies
+
+Disable automatic input/output capture where necessary.
+Use explicit sanitized attributes.
+
+Observability must not modify agent behavior or permissions.
+
+STEP 5 — TESTING
+
+Add tests for:
+- Trace creation
+- Run ID correlation
+- Sensitive-data redaction
+- Missing API key
+- Export failures
+- Agent lifecycle events
+
+Run all existing backend tests.
+
+Then send ONE synthetic neatlogs trace.
+
+Verify it appears in the neatlogs dashboard.
+
+Do not make any LLM calls or analyze the security PRs.
+
+STEP 6 — SAFETY
+
+Preserve:
+- Docker restrictions
+- Existing Git branches
+- Entire configuration
+- Current live-analysis gate
+
+Do not commit or push automatically.
+
+STEP 7 — REPORT
+
+Report:
+1. SDK version installed.
+2. Files modified.
+3. Environment variables required.
+4. Test results.
+5. Whether the synthetic trace reached neatlogs.
+6. Whether live analysis remains disabled.
+7. Remaining blockers.
+
+---
+
+tell me what happened? what failed and what did you try so far?
