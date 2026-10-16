@@ -3,15 +3,17 @@
   "checkpoint_id": "01M5121SNT57A62GQG6E3RRT2Q",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 4,
+  "checkpoints_count": 8,
   "files_touched": [
     ".dockerignore",
     ".gitignore",
     "README.md",
     "backend/.env.example",
+    "backend/DEPENDENCIES.md",
     "backend/README.md",
     "backend/app/__init__.py",
     "backend/app/agent.py",
+    "backend/app/browser_worker.py",
     "backend/app/fixture_worker.py",
     "backend/app/github.py",
     "backend/app/llm.py",
@@ -26,18 +28,35 @@
     "backend/app/tools/http.py",
     "backend/app/tools/inspect.py",
     "backend/app/tools/registry.py",
+    "backend/browser/Dockerfile",
+    "backend/browser/LICENSE.moby",
+    "backend/browser/README.md",
+    "backend/browser/approval.example.json",
+    "backend/browser/chromium-seccomp.json",
+    "backend/browser/docker-default-seccomp.json",
+    "backend/browser/requirements.lock.txt",
+    "backend/browser/requirements.txt",
+    "backend/browser/validation-report.json",
     "backend/fixture/Dockerfile",
     "backend/fixture/approvals.example.json",
+    "backend/fixture/requirements.lock.txt",
+    "backend/fixture/requirements.txt",
     "backend/fixture/validation-report.json",
     "backend/pytest.ini",
+    "backend/requirements-dev.lock.txt",
+    "backend/requirements-dev.txt",
     "backend/requirements.lock.txt",
     "backend/requirements.txt",
     "backend/scripts/synthetic_trace.py",
+    "backend/scripts/validate_browser_isolation.py",
     "backend/scripts/validate_fixtures.py",
     "backend/tests/conftest.py",
     "backend/tests/test_agent.py",
+    "backend/tests/test_browser_worker.py",
     "backend/tests/test_components.py",
+    "backend/tests/test_dependencies.py",
     "backend/tests/test_ingestion.py",
+    "backend/tests/test_observability.py",
     "hackathon.md"
   ],
   "sessions": [
@@ -54,6 +73,21 @@
       "compact_transcript": "/1/transcript.jsonl",
       "content_hash": "/1/content_hash.txt",
       "prompt": "/1/prompt.txt"
+    },
+    {
+      "metadata": "/2/metadata.json",
+      "transcript": "/2/full.jsonl",
+      "compact_transcript": "/2/transcript.jsonl",
+      "content_hash": "/2/content_hash.txt",
+      "prompt": "/2/prompt.txt"
     }
-  ]
+  ],
+  "token_usage": {
+    "input_tokens": 568751,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 12212352,
+    "output_tokens": 64875,
+    "api_call_count": 98,
+    "subagent_tokens_complete": true
+  }
 }

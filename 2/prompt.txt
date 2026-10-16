@@ -1,0 +1,425 @@
+We are resuming development of Break My Fix after a break.
+
+Repository:
+https://github.com/png270/breakfix
+
+PROJECT OVERVIEW
+
+Break My Fix is an autonomous AI security patch verification agent.
+
+It accepts a GitHub security-fix PR, analyzes the patch,
+generates security hypotheses, selects testing tools,
+executes tests in an isolated environment, and produces
+an evidence-backed security verdict.
+
+The hackathon is over, but we want to finish this as a
+production-quality portfolio project.
+
+PREVIOUS PROGRESS
+
+1. Built the BookShelf Flask demo application.
+
+2. Created two security-fix PRs:
+   PR #1: https://github.com/png270/breakfix/pull/1
+   PR #2: https://github.com/png270/breakfix/pull/2
+
+3. Implemented a FastAPI backend with:
+   - GitHub PR ingestion
+   - LLM adapter
+   - Bounded agent loop
+   - Security testing tools
+   - Structured observations and verdicts
+
+4. Built Docker fixtures pinned to both PR commits.
+
+5. Implemented neatlogs instrumentation.
+
+6. Backend tests passed: 58 tests in a temporary
+   Python 3.13 environment.
+
+UNRESOLVED ISSUES
+
+1. Existing backend/.venv uses Python 3.14.
+   The previously tested neatlogs SDK 1.4.26 required
+   Python 3.10–3.13.
+
+2. Synthetic neatlogs traces were generated locally
+   but could not be retrieved from the neatlogs project.
+
+3. Chromium failed to launch because of browser
+   sandbox compatibility.
+
+4. LiteLLM has not been verified with real tool calling.
+
+5. Live PR analysis remains disabled.
+
+YOUR TASK
+
+PHASE 1 — RECOVER PROJECT STATE
+
+Read:
+- README.md
+- hackathon.md
+- backend/README.md
+- .agents/skills/neathack/SKILL.md
+
+Inspect:
+- git status
+- Current branch
+- Uncommitted changes
+- Backend module structure
+- Python environment
+- Existing tests
+- Entire configuration
+
+IMPORTANT:
+Do not discard or overwrite uncommitted changes.
+
+Do not modify the existing PR branches.
+
+PHASE 2 — RECOVER NEATLOGS WORK
+
+Inspect:
+- backend/app/observability.py
+- backend/app/agent.py
+- backend/app/llm.py
+- Existing neatlogs tests
+- Current SDK dependencies
+
+Determine what was implemented and what remains incomplete.
+
+Check current official SDK compatibility before deciding
+whether Python 3.13 is still required.
+
+PHASE 3 — FIX ENVIRONMENT
+
+If Python 3.13 is required:
+- Preserve the existing environment until the replacement works.
+- Recreate backend/.venv using Python 3.13.
+- Install the project's dependencies.
+- Verify neatlogs SDK compatibility.
+- Run all backend tests.
+
+PHASE 4 — DEBUG TRACE DELIVERY
+
+Investigate why neatlogs synthetic traces are not
+reaching the dashboard.
+
+Check:
+- SDK initialization
+- API key configuration
+- Exporter endpoint
+- Project identification
+- Flush/shutdown behavior
+- Exporter errors
+- Delivery counters
+- Trace retrieval
+
+Generate a fresh synthetic trace for verification.
+
+Do not expose API keys or other credentials.
+
+PHASE 5 — VERIFY
+
+Run:
+- Backend tests
+- SDK Doctor
+- Synthetic neatlogs trace test
+
+Confirm whether the synthetic trace is visible in
+the correct neatlogs project.
+
+DO NOT:
+- Run the full agent
+- Analyze either security PR
+- Make real LLM calls
+- Weaken Docker restrictions
+- Commit or push automatically
+
+PHASE 6 — REPORT
+
+Provide:
+1. Current Git status and uncommitted changes.
+2. What was recovered from the previous session.
+3. Python environment status.
+4. neatlogs integration status.
+5. Test results.
+6. Root cause of any trace delivery failure, if established.
+7. Remaining blockers.
+8. Recommended next development step.
+
+Begin by inspecting the repository before making changes.
+
+---
+
+We have identified the root cause of the Chromium sandbox failure in Break My Fix.
+
+Repository: ~/Desktop/breakfix
+Current branch: main
+
+BACKGROUND
+
+Break My Fix is an autonomous AI security-patch verification agent.
+
+The agent runs two approved, immutable BookShelf fixture images corresponding to:
+- SQLi PR #1: b0b635eba99f24a3641f729c1a95864a2ee36c9d
+- XSS PR #2: b855cb68e745767153506f7dab9abf368a11e403
+
+Relevant files:
+- backend/app/sandbox.py
+- backend/app/fixture_worker.py
+- backend/app/tools/browser.py
+- backend/fixture/Dockerfile
+- backend/fixture/approvals.json
+- backend/fixture/validation-report.json
+- backend/tests/
+
+ROOT CAUSE — EXPERIMENTALLY VERIFIED
+
+The browser currently launches with:
+
+    playwright.chromium.launch(
+        headless=True,
+        chromium_sandbox=True
+    )
+
+The fixture container uses:
+
+    --network=none
+    --read-only
+    --cap-drop=ALL
+    --security-opt=no-new-privileges
+    --user=10001:10001
+    --cpus=1
+    --memory=768m
+    --pids-limit=128
+
+Chromium fails with:
+
+    FATAL: zygote_host_impl_linux.cc:129
+    No usable sandbox!
+
+We independently reproduced the failure using the approved Docker image.
+
+We then tested user-namespace creation:
+
+    os.unshare(os.CLONE_NEWUSER)
+
+Results:
+
+1. Docker default seccomp profile:
+   PermissionError(1, 'Operation not permitted')
+
+2. Same container restrictions with:
+   --security-opt=seccomp=unconfined
+
+   USER_NAMESPACE_CREATED
+
+Therefore, Docker's default seccomp profile is blocking
+the user-namespace operation Chromium requires.
+
+IMPORTANT:
+seccomp=unconfined was ONLY used for a controlled diagnostic.
+It must NOT become the permanent configuration.
+
+OBJECTIVE
+
+Make Playwright Chromium launch successfully with:
+
+    chromium_sandbox=True
+
+while preserving strong isolation of the vulnerable BookShelf
+application and the host.
+
+PREFERRED ARCHITECTURE
+
+Separate the application fixture and browser execution
+into two isolated containers.
+
+Container A: BookShelf fixture
+- Runs the approved immutable BookShelf application.
+- Retains strict seccomp restrictions.
+- Retains non-root execution.
+- Retains read-only filesystem.
+- Retains dropped Linux capabilities.
+- Retains no-new-privileges.
+- No host mounts, Docker socket, or secrets.
+- No unrestricted outbound network access.
+
+Container B: Playwright browser worker
+- Runs Chromium as a non-root user.
+- Uses a narrowly scoped Chromium-compatible seccomp profile.
+- Keeps chromium_sandbox=True.
+- Retains resource limits, read-only filesystem where feasible,
+  dropped capabilities, and no-new-privileges.
+- Has no host mounts, Docker socket, or application secrets.
+- Can communicate ONLY with the approved BookShelf fixture
+  over a controlled internal network.
+- Must not have unrestricted internet access.
+
+Use official Playwright Docker guidance for Chromium sandboxing
+as a reference.
+
+SECURITY DESIGN REQUIREMENTS
+
+1. Do not use seccomp=unconfined in the final implementation.
+
+2. Do not set chromium_sandbox=False or pass --no-sandbox.
+
+3. Do not use --privileged.
+
+4. Do not expose BookShelf ports to the Mac host.
+
+5. Do not mount the Docker socket or host directories.
+
+6. Do not automatically build, pull, or execute unreviewed
+   GitHub PR source code.
+
+7. Preserve immutable image approvals and commit attestation.
+
+8. Preserve the existing bounded tool interface.
+   The model must not be able to execute arbitrary commands,
+   Python, JavaScript, or shell scripts.
+
+9. Preserve the browser tool's restrictions on navigation,
+   downloads, service workers, and execution time.
+
+10. Prevent the browser from reaching the host, Docker daemon,
+    metadata services, or arbitrary external addresses.
+
+11. Do not modify, merge, or close either existing GitHub PR.
+
+12. Do not change the intended SQLi or XSS vulnerabilities
+    in the demo fixtures.
+
+IMPLEMENTATION PLAN
+
+Phase 1 — Inspect and design
+
+- Review the existing Docker lifecycle and worker architecture.
+- Identify how BookShelf and Chromium currently communicate.
+- Determine the minimum changes needed to separate them.
+- Determine how to create an internal-only Docker network.
+- Determine how the browser worker will receive bounded test
+  instructions and return structured observations.
+- Evaluate the minimum seccomp permissions Chromium requires.
+
+Before making major changes, briefly explain the proposed
+architecture and trust boundaries.
+
+Phase 2 — Implement
+
+- Introduce a dedicated browser worker image/container.
+- Keep the existing BookShelf fixture image immutable.
+- Add a Chromium-compatible seccomp profile derived from
+  Docker's default restrictions.
+- Permit only the additional namespace operations required.
+- Preserve the existing browser_test API and output schema
+  where practical.
+- Update DockerSandbox lifecycle to start, coordinate,
+  and reliably remove both containers and their network.
+- Ensure cleanup also works after exceptions and timeouts.
+- Do not create a host-execution fallback.
+
+Phase 3 — Validate
+
+First, run a minimal Chromium startup test:
+
+    playwright.chromium.launch(
+        headless=True,
+        chromium_sandbox=True
+    )
+
+Then verify:
+- Chromium launches successfully.
+- Browser can navigate to the BookShelf fixture.
+- Browser cannot access arbitrary external addresses.
+- BookShelf remains isolated from external networks.
+- Neither container has the Docker socket or host mounts.
+- Containers run without privileged mode.
+- Browser worker still uses seccomp.
+- Resource limits are enforced.
+- Cleanup removes containers and temporary networks.
+- Existing backend tests continue passing.
+
+Add automated regression tests for the browser worker
+and its isolation boundaries.
+
+Phase 4 — Report
+
+Provide:
+1. Root cause and implemented fix.
+2. Files changed.
+3. Updated architecture diagram.
+4. Security restrictions retained for each container.
+5. Tests executed and their results.
+6. Any remaining security limitations.
+
+Do not run live LLM calls.
+Do not run the full autonomous PR-analysis workflow yet.
+Do not modify .env or expose credentials.
+Do not commit or push changes.
+
+IMPORTANT
+
+Favor a minimal, maintainable implementation over a large
+redesign.
+
+If Docker Desktop prevents the proposed architecture from
+meeting these security requirements, stop and explain the
+blocker rather than silently weakening isolation.
+
+---
+
+Review the current Git working tree for credentials, environment files, virtual environments, generated artifacts, and accidental changes to the approved fixtures. Update .gitignore where necessary. Stage only intended application code, tests, security profiles, and documentation. Show me the staged diff summary and any security concerns. Do not commit or push until I approve.
+
+---
+
+summarize what you did in your last run
+
+---
+
+Before committing, resolve the dependency compatibility issue
+identified during the Git review.
+
+Current situation:
+- Backend uses Python 3.13 and neatlogs 1.4.27.
+- Existing approved BookShelf fixture images use Python 3.14.
+- The updated backend dependency lock may not install on
+  Python 3.14 because of neatlogs compatibility.
+- Existing approved images must remain unchanged.
+
+Tasks:
+
+1. Inspect the dependency files and Dockerfiles.
+
+2. Separate runtime dependencies by execution environment:
+   - Backend orchestration
+   - BookShelf fixture worker
+   - Browser worker
+
+3. Ensure each environment installs only what it needs.
+
+4. Preserve pinned dependency versions and reproducible builds.
+
+5. Do not rebuild or replace the existing approved fixture
+   images or modify their commit attestations.
+
+6. Validate dependency resolution for each environment.
+
+7. Run the backend test suite and relevant Docker component
+   tests.
+
+8. Review Git staging state, including partially staged files.
+
+9. Scan staged changes for credentials and sensitive artifacts.
+
+10. Show:
+    - Dependency changes
+    - Test results
+    - git status
+    - git diff --cached --stat
+    - Any remaining risks
+
+Do not commit or push.
+Do not modify .env or either GitHub PR.
