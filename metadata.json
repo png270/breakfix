@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M5121SNT57A62GQG6E3RRT2Q",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    ".dockerignore",
+    ".gitignore",
+    "README.md",
+    "backend/.env.example",
+    "backend/README.md",
+    "backend/app/__init__.py",
+    "backend/app/agent.py",
+    "backend/app/fixture_worker.py",
+    "backend/app/github.py",
+    "backend/app/llm.py",
+    "backend/app/main.py",
+    "backend/app/observability.py",
+    "backend/app/replay.py",
+    "backend/app/sandbox.py",
+    "backend/app/schemas.py",
+    "backend/app/state.py",
+    "backend/app/tools/__init__.py",
+    "backend/app/tools/browser.py",
+    "backend/app/tools/http.py",
+    "backend/app/tools/inspect.py",
+    "backend/app/tools/registry.py",
+    "backend/fixture/Dockerfile",
+    "backend/fixture/approvals.example.json",
+    "backend/fixture/validation-report.json",
+    "backend/pytest.ini",
+    "backend/requirements.lock.txt",
+    "backend/requirements.txt",
+    "backend/scripts/validate_fixtures.py",
+    "backend/tests/conftest.py",
+    "backend/tests/test_agent.py",
+    "backend/tests/test_components.py",
+    "backend/tests/test_ingestion.py",
+    "hackathon.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ]
+}

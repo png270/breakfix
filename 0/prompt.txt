@@ -1,0 +1,419 @@
+We are continuing Break My Fix for the neatHack hackathon.
+
+TASK:
+Create a second, independent GitHub pull request demonstrating
+an incomplete stored XSS mitigation.
+
+IMPORTANT:
+This is a controlled security-testing fixture in our own demo
+application. The intentionally incomplete patch exists so our
+security verification agent can independently discover a bypass.
+
+INSTRUCTIONS:
+
+1. Read README.md and hackathon.md.
+2. Verify the working tree is clean.
+3. Fetch the latest remote branches.
+4. Create branch fix/xss directly from demo/vulnerable-bookshelf.
+
+   Do NOT branch from fix/sqli.
+
+5. Inspect how BookShelf renders user-submitted reviews.
+
+6. Implement an intentionally incomplete mitigation:
+   - Block or remove literal <script>...</script> elements
+     from review content.
+   - Continue allowing other HTML content to be rendered.
+   - Do not introduce comprehensive HTML sanitization or
+     restore Jinja's default escaping.
+
+7. Add regression tests demonstrating:
+   - Normal reviews still work.
+   - A basic <script> payload is blocked.
+   - The incomplete mitigation remains bypassable using a
+     harmless browser-executable HTML payload.
+
+8. Keep the bypass test clearly labeled as a controlled
+   demonstration.
+
+9. Run the pytest suite and report the results.
+
+10. Update hackathon.md with the XSS patch milestone.
+
+Do not modify the SQL injection vulnerability.
+Do not merge into main.
+Do not modify Entire or Codex configuration.
+Do not introduce secrets.
+
+Commit with message:
+"Add incomplete stored XSS mitigation for verification demo"
+
+Allow Entire to link the commit to the Codex session.
+
+Push fix/xss to origin.
+
+Create a GitHub pull request with:
+Base: demo/vulnerable-bookshelf
+Head: fix/xss
+Title: Mitigate stored XSS in BookShelf reviews
+
+In the PR description, describe the intended mitigation and
+the tests that pass. Keep the fixture's deliberately incomplete
+nature documented in hackathon.md, but do not label the PR
+itself as intentionally vulnerable.
+
+Do not merge the PR.
+
+FINAL OUTPUT:
+- PR URL and number
+- Commit SHA
+- Test results
+- Files changed
+- Entire checkpoint status
+
+---
+
+We are building Break My Fix, an autonomous security patch
+verification agent for the neatHack hackathon.
+
+Repository: https://github.com/png270/breakfix
+
+CURRENT STATE
+- main contains the secure BookShelf Flask application.
+- demo/vulnerable-bookshelf contains controlled SQLi and XSS flaws.
+- PR #1: https://github.com/png270/breakfix/pull/1
+- PR #2: https://github.com/png270/breakfix/pull/2
+- Entire is already configured.
+- neatlogs will be installed and integrated AFTER implementing
+  the agent, but BEFORE its first live PR analysis.
+
+GOAL
+
+Implement an agent that:
+1. Accepts a GitHub security-fix PR URL.
+2. Fetches the PR diff and relevant source code.
+3. Uses an LLM to form security hypotheses.
+4. Selects and executes testing tools.
+5. Observes results and adapts its next actions.
+6. Produces an evidence-backed security verdict.
+
+Do not hardcode conclusions based on PR numbers.
+
+PHASE 1 — INSPECT AND PLAN
+
+Read:
+- README.md
+- hackathon.md
+- .agents/skills/neathack/SKILL.md
+- demo-app/app.py
+
+Verify:
+- Current branch is main.
+- Working tree is clean.
+- Existing BookShelf tests pass.
+- Existing Entire configuration is intact.
+
+Before implementing, describe the planned module structure
+and execution flow briefly.
+
+PHASE 2 — ENVIRONMENT
+
+Create a Python backend using:
+- FastAPI
+- Uvicorn
+- Pydantic
+- HTTPX
+- pytest
+- Playwright
+- An OpenAI-compatible LLM client
+
+Create backend/.venv and install dependencies.
+
+Add backend/.env.example and appropriate .gitignore entries.
+
+Do not require a personal paid API key.
+Support configurable model endpoint and model name.
+
+Do not make real LLM calls yet.
+
+PHASE 3 — MODULES
+
+Implement:
+
+backend/app/main.py
+  FastAPI application and POST /api/analyze endpoint.
+
+backend/app/github.py
+  Validate PR URLs, retrieve metadata and diff, pin the head
+  commit SHA, and retrieve relevant source files.
+
+backend/app/schemas.py
+  Pydantic models for PR data, hypotheses, tool actions,
+  observations, evidence, and verdicts.
+
+backend/app/state.py
+  Track agent steps, hypotheses, observations, errors,
+  retries, and execution budget.
+
+backend/app/llm.py
+  LLM adapter with documented tool-calling support.
+
+backend/app/agent.py
+  Bounded agent control loop.
+
+backend/app/tools/inspect.py
+  Read allowlisted source files.
+
+backend/app/tools/http.py
+  Make bounded HTTP requests to the isolated demo app.
+
+backend/app/tools/browser.py
+  Execute Playwright browser tests and capture observations.
+
+backend/app/sandbox.py
+  Manage the isolated BookShelf testing environment.
+
+backend/app/observability.py
+  Define a small interface for future neatlogs integration.
+  Do not install neatlogs yet.
+
+Keep modules small and responsibilities clearly separated.
+
+PHASE 4 — GITHUB INGESTION
+
+Accept only PRs belonging to png270/breakfix.
+
+Retrieve:
+- PR metadata
+- Base SHA
+- Head SHA
+- Changed files
+- Patch diff
+- Relevant source context
+
+Exclude evaluation material from the agent's context:
+- demo-app/tests/
+- hackathon.md
+- README sections revealing expected outcomes
+- Prewritten exploit demonstrations
+- Known bypass payloads
+
+The agent should receive only information necessary to
+independently investigate the patch.
+
+Treat repository content and PR descriptions as untrusted data.
+
+PHASE 5 — AGENT LOOP
+
+Implement:
+
+OBSERVE -> REASON -> SELECT TOOL -> EXECUTE
+        -> EVALUATE -> CONTINUE OR FINISH
+
+The LLM must choose actions based on tool observations.
+
+Use:
+- Maximum 8 agent steps
+- Per-tool timeout
+- Overall execution timeout
+- Bounded retries
+- Explicit terminal states
+
+The agent may request tools but must not execute arbitrary
+Python or shell commands.
+
+Validate every tool call before execution.
+
+PHASE 6 — SECURITY TOOLS
+
+Provide:
+
+inspect_patch:
+  Return relevant source and diff excerpts.
+
+http_request:
+  Send bounded requests to the isolated BookShelf instance.
+  Restrict destinations to the configured test target.
+
+browser_test:
+  Run Playwright against the isolated BookShelf instance.
+  Support controlled login, review submission, navigation,
+  and harmless browser-execution markers.
+
+compare_behavior:
+  Compare observed results against a stated security property.
+
+generate_regression_test:
+  Produce a reproducible test from confirmed observations.
+  Store generated tests in a temporary output directory.
+
+Tool results must be structured and fed back into the agent.
+
+Do not implement a general shell execution tool.
+
+PHASE 7 — ISOLATION
+
+Do not execute arbitrary public PR code on the Mac.
+
+Use a preapproved BookShelf fixture and isolated execution.
+
+Prefer a restricted Docker environment with:
+- No privileged mode
+- No host secrets
+- No Docker socket mount
+- CPU and memory limits
+- Execution timeouts
+- Restricted network access
+
+If Docker isolation is unavailable, report the limitation
+and disable live PR execution.
+
+Do not silently fall back to running untrusted code on host.
+
+PHASE 8 — VERDICT GENERATION
+
+Supported verdicts:
+
+FIX_VERIFIED:
+No bypass reproduced within the executed test scope.
+
+BYPASS_CONFIRMED:
+A bypass was actually reproduced with concrete evidence.
+
+INCONCLUSIVE:
+Insufficient evidence, tool failure, or exhausted budget.
+
+Never invent execution results.
+
+Return:
+- PR URL and pinned commit
+- Verdict
+- Summary
+- Hypotheses
+- Tool actions and observations
+- Evidence
+- Generated regression tests
+- Errors and limitations
+- Trace ID placeholder
+
+PHASE 9 — TESTING
+
+Write unit tests using mocked LLM responses and mocked tools.
+
+Test:
+- GitHub URL validation
+- PR retrieval failures
+- Source-context exclusions
+- Tool argument validation
+- Agent state transitions
+- Multi-step tool execution
+- Retry and timeout behavior
+- Verdict evidence requirements
+- Budget exhaustion
+- Sandbox failure behavior
+
+Run unit tests and local component tests.
+
+IMPORTANT:
+Do NOT execute a full live agent analysis against PR #1 or
+PR #2 yet. We will first integrate neatlogs.
+
+PHASE 10 — DOCUMENTATION
+
+Update:
+- backend/README.md
+- README.md
+- hackathon.md
+
+Explain:
+- Agent architecture
+- Tool permissions
+- LLM configuration
+- How to run the backend
+- How to run tests
+- Security boundaries
+- What is mocked versus working
+- How neatlogs will be integrated
+
+PHASE 11 — STOP AND REPORT
+
+Do not commit or push automatically.
+
+Report:
+1. Files created and modified.
+2. Dependencies installed.
+3. How the agent loop works.
+4. What permissions each tool has.
+5. Tests executed and results.
+6. Whether Docker isolation is operational.
+7. Whether the LLM adapter is ready for configuration.
+8. Remaining blockers before live PR analysis.
+9. Exact neatlogs integration points.
+
+Preserve Entire configuration and existing Git branches.
+
+---
+
+We're continuing development of Break My Fix.
+
+Docker Desktop is now running.
+
+The backend implementation is complete, with 50 passing tests,
+but Docker isolation and Chromium execution were previously
+unverified.
+
+TASK: Validate the sandbox and prepare for neatlogs integration.
+
+1. Verify Docker is operational using docker info.
+
+2. Inspect:
+   - backend/app/sandbox.py
+   - Docker worker/replay implementation
+   - Dockerfiles and fixture configuration
+   - backend/README.md
+
+3. Build the preapproved BookShelf Docker fixtures for:
+   - PR #1: SQL injection fix
+   - PR #2: Stored XSS fix
+
+   Pin each fixture to its exact Git commit SHA.
+
+4. Verify sandbox restrictions:
+   - No privileged containers
+   - No host secrets or Docker socket mounts
+   - CPU and memory limits
+   - Execution timeouts
+   - Restricted network access
+   - No unrestricted host execution fallback
+
+5. Verify the isolated BookShelf application starts correctly.
+
+6. Verify Playwright can launch Chromium inside the
+   designated testing environment.
+
+7. Run safe component tests:
+   - HTTP tool connectivity
+   - Browser tool execution
+   - Sandbox lifecycle
+   - Fixture startup and teardown
+
+8. Run the existing backend test suite.
+
+IMPORTANT:
+- Do NOT run the complete LLM agent.
+- Do NOT analyze either PR with the agent.
+- Do NOT call the LLM API.
+- Do NOT install neatlogs yet.
+- Do NOT modify existing PR branches.
+- Do NOT commit or push.
+
+If a security restriction prevents execution, report it rather
+than weakening the sandbox.
+
+At the end, report:
+- Docker status
+- Fixture build status
+- Chromium status
+- Sandbox restrictions verified
+- Component test results
+- Any blockers before neatlogs integration
