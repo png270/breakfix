@@ -1,0 +1,6 @@
+# Backend orchestration runtime, Python 3.13. Install the compiled hash lock.
+fastapi==0.143.0
+uvicorn==0.54.0
+pydantic==2.14.0
+httpx==0.28.1
+neatlogs==1.4.27

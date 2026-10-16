@@ -1,0 +1,179 @@
+{
+  "synthetic_components_only": true,
+  "fixtures": [
+    {
+      "commit": "b0b635eba99f24a3641f729c1a95864a2ee36c9d",
+      "checks": {
+        "startup": true,
+        "isolated_internal_network": true,
+        "runtime_isolation": true,
+        "sandboxed_chromium_and_fixture_navigation": true,
+        "bounded_browser_workflow": true,
+        "http_worker_preserved": true,
+        "tool_timeout_cleanup": true,
+        "cleanup": true
+      },
+      "restrictions": {
+        "app": {
+          "image": "sha256:1f15e8c7ecc7ee8c8baa0b64f3b45156507811dc0a55845985d23a7d07b77d9a",
+          "user": "10001:10001",
+          "read_only": true,
+          "privileged": false,
+          "mounts": [],
+          "published_ports": {},
+          "cap_drop": [
+            "ALL"
+          ],
+          "no_new_privileges": true,
+          "seccomp": "docker-default",
+          "cpus": 1,
+          "memory_bytes": 805306368,
+          "pids_limit": 128
+        },
+        "browser": {
+          "image": "sha256:7f7dc0f4d024566c7894a403906209b82c93dc6b45166671d96f75ea1f62e837",
+          "user": "10001:10001",
+          "read_only": true,
+          "privileged": false,
+          "mounts": [],
+          "published_ports": {},
+          "cap_drop": [
+            "ALL"
+          ],
+          "no_new_privileges": true,
+          "seccomp": "custom-default-derived",
+          "cpus": 1,
+          "memory_bytes": 805306368,
+          "pids_limit": 128
+        }
+      },
+      "runtime": {
+        "app": {
+          "uid": 10001,
+          "read_only": true,
+          "cap_eff": "0000000000000000",
+          "seccomp": "2",
+          "no_new_privs": "1",
+          "external_connections_blocked": {
+            "1.1.1.1": true,
+            "169.254.169.254": true,
+            "192.168.65.254": true,
+            "192.168.65.2": true
+          },
+          "dns_blocked": true,
+          "no_default_route": true,
+          "docker_socket_absent": true,
+          "cpu_max": "100000 100000",
+          "memory_max": "805306368",
+          "pids_max": "128"
+        },
+        "browser": {
+          "uid": 10001,
+          "read_only": true,
+          "cap_eff": "0000000000000000",
+          "seccomp": "2",
+          "no_new_privs": "1",
+          "external_connections_blocked": {
+            "1.1.1.1": true,
+            "169.254.169.254": true,
+            "192.168.65.254": true,
+            "192.168.65.2": true
+          },
+          "dns_blocked": true,
+          "no_default_route": true,
+          "docker_socket_absent": true,
+          "cpu_max": "100000 100000",
+          "memory_max": "805306368",
+          "pids_max": "128"
+        }
+      }
+    },
+    {
+      "commit": "b855cb68e745767153506f7dab9abf368a11e403",
+      "checks": {
+        "startup": true,
+        "isolated_internal_network": true,
+        "runtime_isolation": true,
+        "sandboxed_chromium_and_fixture_navigation": true,
+        "bounded_browser_workflow": true,
+        "http_worker_preserved": true,
+        "tool_timeout_cleanup": true,
+        "cleanup": true
+      },
+      "restrictions": {
+        "app": {
+          "image": "sha256:81710a0aead1350872a1952e0ad872ff1016a4499567b6e9906ca882b56681d1",
+          "user": "10001:10001",
+          "read_only": true,
+          "privileged": false,
+          "mounts": [],
+          "published_ports": {},
+          "cap_drop": [
+            "ALL"
+          ],
+          "no_new_privileges": true,
+          "seccomp": "docker-default",
+          "cpus": 1,
+          "memory_bytes": 805306368,
+          "pids_limit": 128
+        },
+        "browser": {
+          "image": "sha256:7f7dc0f4d024566c7894a403906209b82c93dc6b45166671d96f75ea1f62e837",
+          "user": "10001:10001",
+          "read_only": true,
+          "privileged": false,
+          "mounts": [],
+          "published_ports": {},
+          "cap_drop": [
+            "ALL"
+          ],
+          "no_new_privileges": true,
+          "seccomp": "custom-default-derived",
+          "cpus": 1,
+          "memory_bytes": 805306368,
+          "pids_limit": 128
+        }
+      },
+      "runtime": {
+        "app": {
+          "uid": 10001,
+          "read_only": true,
+          "cap_eff": "0000000000000000",
+          "seccomp": "2",
+          "no_new_privs": "1",
+          "external_connections_blocked": {
+            "1.1.1.1": true,
+            "169.254.169.254": true,
+            "192.168.65.254": true,
+            "192.168.65.2": true
+          },
+          "dns_blocked": true,
+          "no_default_route": true,
+          "docker_socket_absent": true,
+          "cpu_max": "100000 100000",
+          "memory_max": "805306368",
+          "pids_max": "128"
+        },
+        "browser": {
+          "uid": 10001,
+          "read_only": true,
+          "cap_eff": "0000000000000000",
+          "seccomp": "2",
+          "no_new_privs": "1",
+          "external_connections_blocked": {
+            "1.1.1.1": true,
+            "169.254.169.254": true,
+            "192.168.65.254": true,
+            "192.168.65.2": true
+          },
+          "dns_blocked": true,
+          "no_default_route": true,
+          "docker_socket_absent": true,
+          "cpu_max": "100000 100000",
+          "memory_max": "805306368",
+          "pids_max": "128"
+        }
+      }
+    }
+  ]
+}

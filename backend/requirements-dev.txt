@@ -1,0 +1,4 @@
+# Host test dependencies, Python 3.13; not installed in either worker image.
+-r requirements.txt
+pytest==9.1.1
+playwright==1.63.0

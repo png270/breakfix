@@ -2,7 +2,7 @@
 
 Team **0day** · [GitHub](https://github.com/png270/breakfix) · neatHack, October 10–12, 2026
 
-An autonomous security agent that independently verifies whether AI-generated security patches actually remediate vulnerabilities. **Only BookShelf is implemented so far.** The agent and dashboard are future work.
+An autonomous security agent that independently verifies whether AI-generated security patches actually remediate vulnerabilities. **BookShelf and the backend investigation loop are implemented.** Live agent analysis is gated pending model validation and explicit review; the dashboard is future work.
 
 ## Repository architecture
 
@@ -14,7 +14,7 @@ An autonomous security agent that independently verifies whether AI-generated se
    static/css/style.css         Responsive interface and illustrated book covers
    tests/test_bookshelf.py       Workflow and security tests
    requirements.txt             Flask and pytest
- backend/.gitkeep               Future FastAPI agent placeholder
+ backend/                       FastAPI agent, bounded tools, tests and Docker fixture recipe
  frontend/.gitkeep              Future React/TypeScript/Vite dashboard placeholder
  hackathon.md                   Evidence-based build log and submission checklist
 ```
@@ -67,10 +67,33 @@ Verified result on October 10: **9 passed in 0.72s**. Tests use isolated tempora
 
 Current BookShelf uses parameterized queries, Werkzeug password hashing, Jinja2 HTML escaping and CSRF tokens on every POST. No intentional vulnerabilities have been introduced.
 
-Later, in isolated local test branches, create a SQL-injection search baseline and a stored-XSS review baseline. The intended demonstrations are a correct SQL-injection patch and an incomplete stored-XSS patch verified by browser execution. No vulnerability branches, security-fix PRs or agent code exist yet.
+The controlled baseline exists on `demo/vulnerable-bookshelf`. Independent, unmerged SQLi and XSS patch candidates are [PR #1](https://github.com/png270/breakfix/pull/1) and [PR #2](https://github.com/png270/breakfix/pull/2). Main remains the secure BookShelf implementation. The backend loop is implemented, but independent live verification of these PRs has not run; neatlogs and approved Docker fixtures are prerequisites.
 
-Break My Fix is planned to use FastAPI, HTTPX, Playwright and pytest with a React + TypeScript + Vite dashboard. See [hackathon.md](hackathon.md) for sponsor status and next milestones.
+Break My Fix uses FastAPI, HTTPX, Playwright, Pydantic and pytest for its backend. A React + TypeScript + Vite dashboard remains planned. See [hackathon.md](hackathon.md) for sponsor status and next milestones.
 
 ## Current limits
 
-No password recovery, email verification, rate limiting, moderation, review editing or production deployment. Search supports SQLite LIKE wildcards. Automated tests verify HTML escaping; execution-based Playwright adversarial testing belongs to the future agent. Desktop and 390px mobile landing layouts were visually checked in Chrome; a full device matrix has not been tested. Entire reports this Codex session active and zero checkpoints on main; no commits or pushes were made.
+No password recovery, email verification, rate limiting, moderation, review editing or production deployment. Search supports SQLite LIKE wildcards. Automated tests verify HTML escaping; execution-based Playwright adversarial testing belongs to the future agent. Desktop and 390px mobile landing layouts were visually checked in Chrome; a full device matrix has not been tested. Entire is enabled with Codex tracking. See the dated build log for session-specific checkpoint evidence; this backend session makes no new commits or pushes.
+
+
+## Agent backend
+
+See [backend/README.md](backend/README.md) for architecture, model configuration, tool permissions and Docker boundaries. No real LLM calls or live PR analyses have run. The API accepts only this repository's PRs and excludes test/build-log material from model context. It deliberately remains disabled for live analysis; neatlogs synthetic delivery is verified, and both approved fixtures pass HTTP and sandboxed-browser component checks; no host fallback is permitted.
+
+```sh
+python3.13 -m venv backend/.venv
+backend/.venv/bin/python -m pip install --require-hashes -r backend/requirements.lock.txt
+backend/.venv/bin/python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000
+```
+
+Install `backend/requirements-dev.lock.txt` with `--require-hashes` before running backend tests from `backend/`: `.venv/bin/python -m pytest -q`. Keep them separate from BookShelf's test command to avoid the two `app` import roots colliding. Main BookShelf remains secure; controlled demo and independent fix branches/PRs remain separate and unmerged.
+
+## October 15 recovery
+
+Backend `.venv` now uses Python 3.13.15 with neatlogs 1.4.27 and a complete dependency lock. The old Python 3.14 environment is preserved in ignored `backend/.venv-python314-backup`. All 58 backend tests pass. SDK Doctor local and network probes pass; a fresh application synthetic trace is retrievable with 18 spans. Dashboard project-name confirmation remains pending. Live analysis stays disabled. Chromium validation was completed in the subsequent browser isolation update below; real model tool calling remains outstanding. See backend README for repeatable diagnostics.
+
+## October 15 browser isolation update
+
+The Chromium sandbox blocker is resolved using a separate approved browser worker and a default-derived seccomp profile. Both immutable BookShelf images remain unchanged. The two containers retain non-root execution, read-only filesystems, dropped capabilities, no-new-privileges and resource limits, and share a per-run internal bridge without a host gateway or external route. See [architecture, reproduction and limitations](backend/browser/README.md) and [component evidence](backend/browser/validation-report.json). Live analysis remains disabled pending separate model verification and review.
+
+Backend, fixture and browser dependencies are separately pinned and hash-locked for their Python versions. See [dependency environments and validation](backend/DEPENDENCIES.md). Existing approved BookShelf images remain unchanged; fixture recipe changes affect only future reviewed builds.

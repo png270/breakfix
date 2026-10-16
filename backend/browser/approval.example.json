@@ -1,0 +1,5 @@
+{
+  "image": "sha256:<reviewed-local-browser-image-id>",
+  "runner_sha256": "<app.sandbox.browser_digest()>",
+  "seccomp_sha256": "<sha256-of-chromium-seccomp.json>"
+}

@@ -1,9 +1,47 @@
-.venv/
+# Local Python environments and caches
+.venv*/
+venv/
 __pycache__/
 *.pyc
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.uv-cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Credentials and local environment configuration (templates are safe to review)
 .env
 .env.*
+.envrc
+!.env.example
+.aws/
+.ssh/
+.netrc
+.pypirc
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime data and generated output
 *.db
 *.sqlite
 *.sqlite3
 .pytest_cache/
+*.log
+playwright-report/
+test-results/
+blob-report/
+*.egg-info/
+build/
+dist/
+backend/fixture/approvals.json
+backend/browser/approval.json
+backend/generated/
+
+# OS metadata
+.DS_Store
+._*

@@ -1,0 +1,182 @@
+{
+  "date": "2026-10-11",
+  "docker_version": "29.0.1",
+  "base_image": "python@sha256:a2b82f3c48559aa0a8446d9af49826b6e2b2016f4cd2afabfe6013ec53729170",
+  "fixtures": [
+    {
+      "commit": "b0b635eba99f24a3641f729c1a95864a2ee36c9d",
+      "image": "sha256:1f15e8c7ecc7ee8c8baa0b64f3b45156507811dc0a55845985d23a7d07b77d9a",
+      "checks": {
+        "startup": true,
+        "restrictions": true,
+        "http_connectivity": true,
+        "browser_workflow": false,
+        "timeout": true,
+        "teardown": true
+      },
+      "errors": [
+        "Browser component: SandboxError"
+      ],
+      "restrictions": {
+        "privileged": false,
+        "network_mode": "none",
+        "binds": null,
+        "mounts": [],
+        "read_only": true,
+        "cpu_nano": 1000000000,
+        "memory_bytes": 805306368,
+        "pids_limit": 128,
+        "cap_drop": [
+          "ALL"
+        ],
+        "security_opt": [
+          "no-new-privileges"
+        ],
+        "published_ports": {},
+        "user": "10001:10001",
+        "environment_keys": [
+          "BMF_FIXTURE_WORKER",
+          "PATH",
+          "PLAYWRIGHT_BROWSERS_PATH",
+          "PYTHONDONTWRITEBYTECODE",
+          "PYTHON_SHA256",
+          "PYTHON_VERSION"
+        ]
+      },
+      "runtime_probe": {
+        "uid": 10001,
+        "read_only": true,
+        "network_blocked": true,
+        "docker_socket_absent": true,
+        "cap_eff": "0000000000000000",
+        "cpu_max": "100000 100000",
+        "memory_max": "805306368"
+      },
+      "browser_failure_reason": "Chromium sandboxing failed: No usable sandbox; restrictions retained.",
+      "source_snapshot": [
+        {
+          "path": "demo-app/app.py",
+          "sha256": "e3d30fb55c1817d30a96bdc42db9dea870c1bb07b8b27ac1c62934fd54560872"
+        },
+        {
+          "path": "demo-app/static/css/style.css",
+          "sha256": "664be32d340480f6e0f9367fe7e84e9b6dcbeed365bbff95f90f6c730228f74a"
+        },
+        {
+          "path": "demo-app/templates/auth.html",
+          "sha256": "ea0b1b8269b168dfd8e0d9c391b350f20584c08294c947c016347c617c30b99a"
+        },
+        {
+          "path": "demo-app/templates/base.html",
+          "sha256": "1c2376a93fa09ded137cf17dd775e6490f69433506831e6bb1858f09301c1a8a"
+        },
+        {
+          "path": "demo-app/templates/book.html",
+          "sha256": "fc2e4e1ed41c7cda6136330970927b8aa73878342748614161d0b96cc613460f"
+        },
+        {
+          "path": "demo-app/templates/browse.html",
+          "sha256": "e64dc1da0b4da88e46958147260698c6a0bcf05eabad04750125cc1687244e21"
+        },
+        {
+          "path": "demo-app/templates/edit_profile.html",
+          "sha256": "4307afbc6f17e51a3d0f0580b9a2a032effc6798e4a4be090f0467806e945573"
+        },
+        {
+          "path": "demo-app/templates/profile.html",
+          "sha256": "129900408e0c7c42469a5c2aafd3c9d929c9a22eb0c3d7b58b561057b59b1198"
+        }
+      ]
+    },
+    {
+      "commit": "b855cb68e745767153506f7dab9abf368a11e403",
+      "image": "sha256:81710a0aead1350872a1952e0ad872ff1016a4499567b6e9906ca882b56681d1",
+      "checks": {
+        "startup": true,
+        "restrictions": true,
+        "http_connectivity": true,
+        "browser_workflow": false,
+        "timeout": true,
+        "teardown": true
+      },
+      "errors": [
+        "Browser component: SandboxError"
+      ],
+      "restrictions": {
+        "privileged": false,
+        "network_mode": "none",
+        "binds": null,
+        "mounts": [],
+        "read_only": true,
+        "cpu_nano": 1000000000,
+        "memory_bytes": 805306368,
+        "pids_limit": 128,
+        "cap_drop": [
+          "ALL"
+        ],
+        "security_opt": [
+          "no-new-privileges"
+        ],
+        "published_ports": {},
+        "user": "10001:10001",
+        "environment_keys": [
+          "BMF_FIXTURE_WORKER",
+          "PATH",
+          "PLAYWRIGHT_BROWSERS_PATH",
+          "PYTHONDONTWRITEBYTECODE",
+          "PYTHON_SHA256",
+          "PYTHON_VERSION"
+        ]
+      },
+      "runtime_probe": {
+        "uid": 10001,
+        "read_only": true,
+        "network_blocked": true,
+        "docker_socket_absent": true,
+        "cap_eff": "0000000000000000",
+        "cpu_max": "100000 100000",
+        "memory_max": "805306368"
+      },
+      "browser_failure_reason": "Chromium sandboxing failed: No usable sandbox; restrictions retained.",
+      "source_snapshot": [
+        {
+          "path": "demo-app/app.py",
+          "sha256": "e23afeb15789073d4463905d49445296aa996773c422be55071164d21b02361c"
+        },
+        {
+          "path": "demo-app/static/css/style.css",
+          "sha256": "664be32d340480f6e0f9367fe7e84e9b6dcbeed365bbff95f90f6c730228f74a"
+        },
+        {
+          "path": "demo-app/templates/auth.html",
+          "sha256": "ea0b1b8269b168dfd8e0d9c391b350f20584c08294c947c016347c617c30b99a"
+        },
+        {
+          "path": "demo-app/templates/base.html",
+          "sha256": "1c2376a93fa09ded137cf17dd775e6490f69433506831e6bb1858f09301c1a8a"
+        },
+        {
+          "path": "demo-app/templates/book.html",
+          "sha256": "587f70d98fc4fca86fdc4a3eec7d8339890bf8a93496333d6d51b4d4083b94f3"
+        },
+        {
+          "path": "demo-app/templates/browse.html",
+          "sha256": "e64dc1da0b4da88e46958147260698c6a0bcf05eabad04750125cc1687244e21"
+        },
+        {
+          "path": "demo-app/templates/edit_profile.html",
+          "sha256": "4307afbc6f17e51a3d0f0580b9a2a032effc6798e4a4be090f0467806e945573"
+        },
+        {
+          "path": "demo-app/templates/profile.html",
+          "sha256": "129900408e0c7c42469a5c2aafd3c9d929c9a22eb0c3d7b58b561057b59b1198"
+        }
+      ]
+    }
+  ],
+  "agent_executed": false,
+  "llm_called": false,
+  "neatlogs_installed": false,
+  "historical": true,
+  "superseded_by": "../browser/validation-report.json"
+}
